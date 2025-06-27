@@ -20,6 +20,7 @@ import OverlayLoader from "./components/Spinner/OverlayLoader";
 import BookAppointment from "./views/Appointments/components/BookAppointment";
 import DoctorAppointment from "./views/Appointments/components/DoctorAppointment";
 import useTypedSelector from "./hooks/useTypedSelector";
+import LandingPage from "./views/LandingPage";
 
 function App() {
   const dispatch = useDispatch();
@@ -37,8 +38,8 @@ function App() {
           ...user.data,
           user: {
             ...user.data.user,
-            seenNotifications: data.data.seenNotifications,
-            unseenNotifications: data.data.unseenNotifications,
+            seenNotifications: data?.data?.seenNotifications || [],
+            unseenNotifications: data?.data?.unseenNotifications || [],
           },
         },
       };
@@ -52,6 +53,10 @@ function App() {
       {isLoading && <OverlayLoader />}
       <Router>
         <Routes>
+          {/* 🚀 Public Landing Page */}
+          <Route path="/" element={<LandingPage />} />
+
+          {/* 🔐 Public Auth Routes */}
           <Route
             path="/login"
             element={
@@ -68,14 +73,18 @@ function App() {
               </PublicRoutes>
             }
           />
+
+          {/* 🏠 Dashboard route moved to /dashboard */}
           <Route
-            path="/"
+            path="/dashboard"
             element={
               <ProtectedRoutes>
                 <Dashboard />
               </ProtectedRoutes>
             }
           />
+
+          {/* ✅ Protected Routes */}
           <Route
             path="/appointments"
             element={
@@ -140,6 +149,8 @@ function App() {
               </ProtectedRoutes>
             }
           />
+
+          {/* ❌ Not Found */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
